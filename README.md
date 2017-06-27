@@ -5,8 +5,11 @@
 ### 增加视频功能
 增加了播放本地视频的功能，播放器基于VLC，可播放几乎所有格式的视频<br>
 支持右滑前进、左滑后退、上滑下滑调节屏幕亮度、滑杆调节视频进度等<br>
-支持获取视频缩略图、视频时间，支持删除视频等<br>
+支持获取视频缩略图、视频时间等，支持删除视频<br>
 视频需要从iTunes导入
+
+需要先下载[MobileVLCKit.framework](http://nightlies.videolan.org/build/iOS)拖入项目<br>
+本项目所用的为MobileVLCKit-3.0-pre-20170620-0932
 
 ![](https://raw.githubusercontent.com/misslove1015/DemoPictures/master/Picture1.jpg)
 ![](https://raw.githubusercontent.com/misslove1015/DemoPictures/master/Picture2.jpg)
