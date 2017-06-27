@@ -6,9 +6,9 @@
 //  Copyright © 2017年 mukr. All rights reserved.
 //
 
-#import "ImageCollectionViewCell.h"
+#import "PictureCollectionViewCell.h"
 
-@implementation ImageCollectionViewCell
+@implementation PictureCollectionViewCell
 
 - (void)setPath:(NSString *)path{
     UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Documents/%@",NSHomeDirectory(),path]];

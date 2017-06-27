@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+
+#define USER_DEFAULTS [NSUserDefaults standardUserDefaults]
+
 @interface AppDelegate ()
 
 @end
@@ -16,6 +19,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    if ([USER_DEFAULTS boolForKey:@"touchIDIsOpen"]) {
+        UIViewController *fingerprint = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"fingerprint"];
+        self.window.rootViewController = fingerprint;
+    }    
     
     return YES;
 }
@@ -30,26 +38,32 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    NSDate *date = [NSDate date];
-    [[NSUserDefaults standardUserDefaults] setObject:date forKey:@"lockTime"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    if ([USER_DEFAULTS boolForKey:@"touchIDIsOpen"]) {
+        NSDate *date = [NSDate date];
+        [USER_DEFAULTS setObject:date forKey:@"lockTime"];
+        [USER_DEFAULTS synchronize];
+    }
+   
 }
 
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-    if ([self isFiveMinute]) {
-        UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"fingerprintViewController"];
-        self.window.rootViewController = viewController;
+    if ([USER_DEFAULTS boolForKey:@"touchIDIsOpen"]) {
+        if ([self isFiveMinute]) {
+            UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"fingerprint"];
+            self.window.rootViewController = viewController;
+        }
+        
     }
     
 }
 
 - (BOOL)isFiveMinute{
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"lockTime"]) {
+    if ([USER_DEFAULTS objectForKey:@"lockTime"]) {
         NSDate *startTime = [[NSUserDefaults standardUserDefaults] objectForKey:@"lockTime"];
         long timeSpace = [[NSDate date] timeIntervalSince1970] - [startTime timeIntervalSince1970];
-        if (timeSpace > 5*60) {
+        if (timeSpace > 60) {
             return YES;
         }else{
             return NO;

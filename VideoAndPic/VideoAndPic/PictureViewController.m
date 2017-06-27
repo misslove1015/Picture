@@ -6,18 +6,17 @@
 //  Copyright © 2017年 mukr. All rights reserved.
 //
 
-#import "ViewController.h"
-#import "ImageCollectionViewCell.h"
+#import "PictureViewController.h"
+#import "PictureCollectionViewCell.h"
 #import "HUPhotoBrowser.h"
 #import "CollectionViewLayout.h"
 #import "AJPhotoPickerViewController.h"
-#import "MBProgressHUD.h"
 
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 #define PATH [NSString stringWithFormat:@"%@/Documents/",NSHomeDirectory()]
 
-@interface ViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIAlertViewDelegate,AJPhotoPickerProtocol>
+@interface PictureViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIAlertViewDelegate,AJPhotoPickerProtocol>
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicatorView;
 @property (strong, nonatomic) NSMutableArray *array;
@@ -26,7 +25,7 @@
 @property (assign, nonatomic) NSInteger index;
 @end
 
-@implementation ViewController
+@implementation PictureViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -47,14 +46,6 @@
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
     
-}
-
-- (void)showHUD{
-    [MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:YES];
-}
-
-- (void)hideHUD{
-    [MBProgressHUD hideHUDForView:[[UIApplication sharedApplication].delegate window] animated:YES];
 }
 
 - (UICollectionViewLayout *)layout{
@@ -129,16 +120,20 @@
 }
 
 - (void)photoPickerTapCameraAction:(AJPhotoPickerViewController *)picker{
-
+    //相机
 }
 
 - (IBAction)refreshDataSource:(id)sender {
-    [_array removeAllObjects];
-    [_array addObjectsFromArray:[self getImagesDataSource]];
-    [self saveArray];
-    [self setImageArrayAndHeightArray];
-    [_collectionView reloadData];
-   
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [_array removeAllObjects];
+        [_array addObjectsFromArray:[self getImagesDataSource]];
+        [self saveArray];
+        [self setImageArrayAndHeightArray];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_collectionView reloadData];
+
+        });
+    });
 }
 
 - (NSMutableArray *)getImagesDataSource{
@@ -162,7 +157,7 @@
 }
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    PictureCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     UIImage *image = _imageArray[indexPath.item];
     cell.cellImageView.image = image;
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPress:)];
@@ -195,7 +190,7 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    ImageCollectionViewCell *cell = (ImageCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    PictureCollectionViewCell *cell = (PictureCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [HUPhotoBrowser showFromImageView:cell.cellImageView withImages:self.imageArray atIndex:indexPath.item];
 }
 

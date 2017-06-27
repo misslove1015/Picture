@@ -22,8 +22,7 @@
     [self print];
 }
 
-- (IBAction)print:(id)sender {
-    
+- (IBAction)print:(id)sender {    
     [self print];
 }
 
@@ -35,10 +34,10 @@
         [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:result reply:^(BOOL success, NSError * _Nullable error) {
             if (success) {//验证成功
                 [[NSOperationQueue mainQueue]addOperationWithBlock:^{
-                    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"nav"];
-//                    [UIView animateWithDuration:0.5 animations:^{
-//                        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:[[UIApplication sharedApplication].delegate window] cache:NO];
-//                    }];
+                    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"tabBar"];
+                    [UIView animateWithDuration:0.5 animations:^{
+                        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:[[UIApplication sharedApplication].delegate window] cache:NO];
+                    }];
                     [[UIApplication sharedApplication].delegate window].rootViewController = viewController;
                                        
                 }];
